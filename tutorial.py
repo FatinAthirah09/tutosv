@@ -22,13 +22,6 @@ st.markdown("---")
 ALL_SEMESTERS = [
     '1st Year Semester 1', '1st Year Semester 2', '1st Year Semester 3',
     '2nd Year Semester 1', '2nd Year Semester 2', '2nd Year Semester 3',
-    '3rd Year Semester 1', '3rd Year Semester 2', '3nd Year Semester 3'
-]
-# NOTE: Corrected '3nd Year Semester 3' from original code to '3rd Year Semester 3' for consistency.
-# Using the original list structure to avoid errors with potential column name mismatches:
-ALL_SEMESTERS = [
-    '1st Year Semester 1', '1st Year Semester 2', '1st Year Semester 3',
-    '2nd Year Semester 1', '2nd Year Semester 2', '2nd Year Semester 3',
     '3rd Year Semester 1', '3rd Year Semester 2', '3rd Year Semester 3' 
 ]
 
@@ -125,8 +118,8 @@ if 'Gender' in arts_df.columns:
             color_discrete_sequence=px.colors.qualitative.T10
         )
         fig_pie.update_traces(textposition='inside', textinfo='percent+label')
-        # FIX: Replaced use_container_width=True
-        st.plotly_chart(fig_pie, use_container_width='stretch') 
+        # FIX: Reverted to use_container_width=True for compatibility with Streamlit v1.50.0
+        st.plotly_chart(fig_pie, use_container_width=True) 
 
     with col_bar:
         st.subheader("Quantity (Bar Chart)")
@@ -141,8 +134,8 @@ if 'Gender' in arts_df.columns:
         )
         fig_bar.update_traces(textposition='outside')
         fig_bar.update_layout(showlegend=False)
-        # FIX: Replaced use_container_width=True
-        st.plotly_chart(fig_bar, use_container_width='stretch')
+        # FIX: Reverted to use_container_width=True for compatibility with Streamlit v1.50.0
+        st.plotly_chart(fig_bar, use_container_width=True)
 else:
     st.info("The 'Gender' column is missing for this analysis.")
 
@@ -167,8 +160,8 @@ if not counts_above_3_df.empty and counts_above_3_df['Count'].sum() > 0:
     )
     fig1.update_traces(textposition='outside')
     fig1.update_layout(xaxis_tickangle=-45)
-    # FIX: Replaced use_container_width=True
-    st.plotly_chart(fig1, use_container_width='stretch') 
+    # FIX: Reverted to use_container_width=True for compatibility with Streamlit v1.50.0
+    st.plotly_chart(fig1, use_container_width=True) 
 else:
     st.info("Semester columns for score analysis were not found or no students scored above 3.00.")
 
@@ -203,8 +196,8 @@ if not overall_average_ratings.empty:
     # Add count values as annotations
     fig2.update_traces(text=[f'{r:.2f}' for r in overall_average_ratings['Average Rating']], textposition="top center")
     fig2.update_layout(yaxis_title='Overall Average Rating', xaxis_title='Academic Year')
-    # FIX: Replaced use_container_width=True
-    st.plotly_chart(fig2, use_container_width='stretch') 
+    # FIX: Reverted to use_container_width=True for compatibility with Streamlit v1.50.0
+    st.plotly_chart(fig2, use_container_width=True) 
 else:
     st.info("Data for academic year average ratings not found.")
 
@@ -216,7 +209,6 @@ st.markdown("---")
 st.header("4. Survey Feedback: Diverging Stacked Bar Chart")
 
 # Define the columns for the diverging chart (use exact names from the prompt)
-# NOTE: The column name has extra spaces in the original prompt, which is preserved here.
 Q1_COL = 'Area of Evaluation [Department provides comprehensive guidelines to the students in advance by means of a brochure/handbook    ]'
 Q2_COL = 'Item [Lesson plans/course outlines are provided in advance to the students ]'
 survey_cols = [col for col in [Q1_COL, Q2_COL] if col in arts_df.columns]
@@ -289,8 +281,8 @@ if survey_cols:
             )
         ]
     )
-    # FIX: Replaced use_container_width=True
-    st.plotly_chart(fig3, use_container_width='stretch') 
+    # FIX: Reverted to use_container_width=True for compatibility with Streamlit v1.50.0
+    st.plotly_chart(fig3, use_container_width=True) 
 else:
     st.info("The selected survey columns were not found in the dataset.")
 
@@ -315,8 +307,8 @@ if not counts_below_2_5_df.empty and counts_below_2_5_df['Count'].sum() > 0:
     )
     fig4.update_traces(textposition='outside')
     fig4.update_layout(xaxis_tickangle=-45)
-    # FIX: Replaced use_container_width=True
-    st.plotly_chart(fig4, use_container_width='stretch') 
+    # FIX: Reverted to use_container_width=True for compatibility with Streamlit v1.50.0
+    st.plotly_chart(fig4, use_container_width=True) 
 else:
     st.info("Semester columns for score analysis were not found or no students scored below 2.50.")
 
@@ -348,7 +340,7 @@ if SEMESTER_COL_GENDER in arts_df.columns and 'Gender' in arts_df.columns:
     )
     fig5.update_traces(textposition='outside')
     fig5.update_layout(xaxis_title='Gender', yaxis_title='Number of Students', showlegend=False)
-    # FIX: Replaced use_container_width=True
-    st.plotly_chart(fig5, use_container_width='stretch') 
+    # FIX: Reverted to use_container_width=True for compatibility with Streamlit v1.50.0
+    st.plotly_chart(fig5, use_container_width=True) 
 else:
     st.info(f"Required columns ('{SEMESTER_COL_GENDER}' or 'Gender') not found for this analysis.")
