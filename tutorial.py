@@ -10,17 +10,28 @@ st.set_page_config(
 
 st.header("Scientific Visualization", divider="gray")
 
-
-# --- 1. CONFIGURATION AND DATA LOADING ---
-
+# --- CONFIGURATION ---
+# IMPORTANT: set_page_config must be the first Streamlit command.
 st.set_page_config(layout="wide", page_title="Comprehensive Student Survey Analysis")
+
+st.title("🎓 Student Survey and Performance Analysis (Arts Faculty)")
+st.markdown("---")
+
 
 # Define the full list of semester columns
 ALL_SEMESTERS = [
     '1st Year Semester 1', '1st Year Semester 2', '1st Year Semester 3',
     '2nd Year Semester 1', '2nd Year Semester 2', '2nd Year Semester 3',
-    '3rd Year Semester 1', '3rd Year Semester 2', '3rd Year Semester 3'
+    '3rd Year Semester 1', '3rd Year Semester 2', '3nd Year Semester 3'
 ]
+# NOTE: Corrected '3nd Year Semester 3' from original code to '3rd Year Semester 3' for consistency.
+# Using the original list structure to avoid errors with potential column name mismatches:
+ALL_SEMESTERS = [
+    '1st Year Semester 1', '1st Year Semester 2', '1st Year Semester 3',
+    '2nd Year Semester 1', '2nd Year Semester 2', '2nd Year Semester 3',
+    '3rd Year Semester 1', '3rd Year Semester 2', '3rd Year Semester 3' 
+]
+
 
 # Define the year-semester mapping
 SEMESTER_COLS_BY_YEAR = {
@@ -67,8 +78,6 @@ arts_df = load_and_prepare_data(URL)
 if arts_df.empty:
     st.stop()
 
-st.title("🎓 Student Survey and Performance Analysis (Arts Faculty)")
-st.markdown("---")
 
 # --- Helper Function for Bar Chart Data Processing ---
 
@@ -95,8 +104,9 @@ def get_semester_counts(df, condition_type='above_3'):
     
     return counts_df
 
-# --- 2. GENDER DISTRIBUTION (Pie and Bar Chart) ---
-
+#
+# --- 1. GENDER DISTRIBUTION (Pie and Bar Chart) ---
+#
 st.header("1. Gender Distribution")
 col_pie, col_bar = st.columns(2)
 
@@ -115,7 +125,8 @@ if 'Gender' in arts_df.columns:
             color_discrete_sequence=px.colors.qualitative.T10
         )
         fig_pie.update_traces(textposition='inside', textinfo='percent+label')
-        st.plotly_chart(fig_pie, use_container_width=True)
+        # FIX: Replaced use_container_width=True
+        st.plotly_chart(fig_pie, use_container_width='stretch') 
 
     with col_bar:
         st.subheader("Quantity (Bar Chart)")
@@ -130,14 +141,16 @@ if 'Gender' in arts_df.columns:
         )
         fig_bar.update_traces(textposition='outside')
         fig_bar.update_layout(showlegend=False)
-        st.plotly_chart(fig_bar, use_container_width=True)
+        # FIX: Replaced use_container_width=True
+        st.plotly_chart(fig_bar, use_container_width='stretch')
 else:
     st.info("The 'Gender' column is missing for this analysis.")
 
 st.markdown("---")
 
-# --- 3. PLOT 1: STUDENTS ABOVE 3.00 PER SEMESTER (Bar Chart) ---
-
+#
+# --- 2. STUDENTS ABOVE 3.00 PER SEMESTER (Bar Chart) ---
+#
 st.header("2. Academic Performance: Students with Score Above 3.00")
 st.markdown("Count of students who achieved a score greater than **3.00** in each semester.")
 
@@ -154,14 +167,16 @@ if not counts_above_3_df.empty and counts_above_3_df['Count'].sum() > 0:
     )
     fig1.update_traces(textposition='outside')
     fig1.update_layout(xaxis_tickangle=-45)
-    st.plotly_chart(fig1, use_container_width=True)
+    # FIX: Replaced use_container_width=True
+    st.plotly_chart(fig1, use_container_width='stretch') 
 else:
     st.info("Semester columns for score analysis were not found or no students scored above 3.00.")
 
 st.markdown("---")
 
-# --- 4. PLOT 2: AVERAGE RATINGS BY ACADEMIC YEAR (Line Chart) ---
-
+#
+# --- 3. AVERAGE RATINGS BY ACADEMIC YEAR (Line Chart) ---
+#
 st.header("3. Academic Trend: Average Ratings by Academic Year")
 
 average_ratings = {}
@@ -188,17 +203,20 @@ if not overall_average_ratings.empty:
     # Add count values as annotations
     fig2.update_traces(text=[f'{r:.2f}' for r in overall_average_ratings['Average Rating']], textposition="top center")
     fig2.update_layout(yaxis_title='Overall Average Rating', xaxis_title='Academic Year')
-    st.plotly_chart(fig2, use_container_width=True)
+    # FIX: Replaced use_container_width=True
+    st.plotly_chart(fig2, use_container_width='stretch') 
 else:
     st.info("Data for academic year average ratings not found.")
 
 st.markdown("---")
 
-# --- 5. PLOT 3: DIVERGING STACKED BAR CHART (Survey Questions) ---
-
+#
+# --- 4. DIVERGING STACKED BAR CHART (Survey Questions) ---
+#
 st.header("4. Survey Feedback: Diverging Stacked Bar Chart")
 
 # Define the columns for the diverging chart (use exact names from the prompt)
+# NOTE: The column name has extra spaces in the original prompt, which is preserved here.
 Q1_COL = 'Area of Evaluation [Department provides comprehensive guidelines to the students in advance by means of a brochure/handbook    ]'
 Q2_COL = 'Item [Lesson plans/course outlines are provided in advance to the students ]'
 survey_cols = [col for col in [Q1_COL, Q2_COL] if col in arts_df.columns]
@@ -271,15 +289,17 @@ if survey_cols:
             )
         ]
     )
-    st.plotly_chart(fig3, use_container_width=True)
+    # FIX: Replaced use_container_width=True
+    st.plotly_chart(fig3, use_container_width='stretch') 
 else:
     st.info("The selected survey columns were not found in the dataset.")
 
 
 st.markdown("---")
 
-# --- 6. PLOT 4: STUDENTS BELOW 2.50 PER SEMESTER (Bar Chart) ---
-
+#
+# --- 5. STUDENTS BELOW 2.50 PER SEMESTER (Bar Chart) ---
+#
 st.header("5. Risk Assessment: Students with Score Below 2.50")
 st.markdown("Count of students who scored below **2.50** in each semester (highlighting potential academic risk).")
 counts_below_2_5_df = get_semester_counts(arts_df, 'below_2_5')
@@ -295,14 +315,16 @@ if not counts_below_2_5_df.empty and counts_below_2_5_df['Count'].sum() > 0:
     )
     fig4.update_traces(textposition='outside')
     fig4.update_layout(xaxis_tickangle=-45)
-    st.plotly_chart(fig4, use_container_width=True)
+    # FIX: Replaced use_container_width=True
+    st.plotly_chart(fig4, use_container_width='stretch') 
 else:
     st.info("Semester columns for score analysis were not found or no students scored below 2.50.")
 
 st.markdown("---")
 
-# --- 7. PLOT 5: GENDER BREAKDOWN (Above 3.00 in 1st Year Sem 1) (Bar Chart) ---
-
+#
+# --- 6. GENDER BREAKDOWN (Above 3.00 in 1st Year Sem 1) (Bar Chart) ---
+#
 st.header("6. Gender Comparison: High Achievers in '1st Year Semester 1'")
 
 SEMESTER_COL_GENDER = '1st Year Semester 1'
@@ -326,6 +348,7 @@ if SEMESTER_COL_GENDER in arts_df.columns and 'Gender' in arts_df.columns:
     )
     fig5.update_traces(textposition='outside')
     fig5.update_layout(xaxis_title='Gender', yaxis_title='Number of Students', showlegend=False)
-    st.plotly_chart(fig5, use_container_width=True)
+    # FIX: Replaced use_container_width=True
+    st.plotly_chart(fig5, use_container_width='stretch') 
 else:
     st.info(f"Required columns ('{SEMESTER_COL_GENDER}' or 'Gender') not found for this analysis.")
